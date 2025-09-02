@@ -1,0 +1,1 @@
+# This is a very important file. It will help me translate complex django models into native python data types that can be rendered into JSON/XML for my frontend integration.
