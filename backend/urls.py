@@ -25,6 +25,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [ # this list holds all the url patterns for my project.
     path("admin/", admin.site.urls), # this line includes the default admin interface provided by django. it means that if i navigate to the /admin/ url of my site, i will be taken to the admin dashboard where i can manage my site's data.
     path("api/", include("blog.urls")), # this line includes all the urls defined in the blog app's urls.py file under the /api/ prefix. it means that any url starting with /blog/ will be handled by the url patterns defined in the blog app.
+    path("api/auth/", include("users.urls")), # this line includes all the urls defined in the users app's urls.py file under the /api/auth/ prefix. it means that any url starting with /api/auth/ will be handled by the url patterns defined in the users app.
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"), # endpoint for obtaining JWT tokens, which means logging in and getting access and refresh tokens. which are useful for authenticating subsequent requests to protected endpoints (for logged-in users).
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"), # endpoint for refreshing JWT tokens, which means getting a new access token using a valid refresh token (for maintaining session without re-login).
 
