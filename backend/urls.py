@@ -15,10 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import path, include
+from django.contrib import admin # imports the admin module from django's contrib package. this module provides a built-in admin interface for managing the site's data.
+from django.urls import path, include # path is used to define individual url patterns. include allows referencing other url configurations, making it easier to manage complex url structures.
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/", include("blog.urls")),
+urlpatterns = [ # this list holds all the url patterns for my project.
+    path("admin/", admin.site.urls), # this line includes the default admin interface provided by django. it means that if i navigate to the /admin/ url of my site, i will be taken to the admin dashboard where i can manage my site's data.
+    path("api/", include("blog.urls")), # this line includes all the urls defined in the blog app's urls.py file under the /api/ prefix. it means that any url starting with /blog/ will be handled by the url patterns defined in the blog app.
 ]
