@@ -17,8 +17,15 @@ Including another URLconf
 
 from django.contrib import admin # imports the admin module from django's contrib package. this module provides a built-in admin interface for managing the site's data.
 from django.urls import path, include # path is used to define individual url patterns. include allows referencing other url configurations, making it easier to manage complex url structures.
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)# import the JWT token obtain view for authentication endpoints
 
 urlpatterns = [ # this list holds all the url patterns for my project.
     path("admin/", admin.site.urls), # this line includes the default admin interface provided by django. it means that if i navigate to the /admin/ url of my site, i will be taken to the admin dashboard where i can manage my site's data.
     path("api/", include("blog.urls")), # this line includes all the urls defined in the blog app's urls.py file under the /api/ prefix. it means that any url starting with /blog/ will be handled by the url patterns defined in the blog app.
+    path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"), # endpoint for obtaining JWT tokens, which means logging in and getting access and refresh tokens. which are useful for authenticating subsequent requests to protected endpoints (for logged-in users).
+    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"), # endpoint for refreshing JWT tokens, which means getting a new access token using a valid refresh token (for maintaining session without re-login).
+
 ]
