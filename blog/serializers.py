@@ -2,7 +2,7 @@
 
 from rest_framework import serializers # imports the serializers module from the Django rest_framework package. it contains tools needed to define how my models are converted to and from JSON.
 from .models import Post, Comment
-from django.contrib.auth.models import User
+
 
 class CommentSerializer(serializers.ModelSerializer): # modelserializer generates fields for your table based on the model, saving you time from creating it manually urself.
     author = serializers.ReadOnlyField(source="author.username") # read-only field because it can't be modified directly through the API. it gets the username of the author from the related User model. u don't want users to change the author of a comment when creating or updating it.
@@ -21,19 +21,3 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ["id", "title", "content", "author", "created_at", "updated_at", "comments"]
 
-
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True) # write-only field for password, meaning it can be set when creating or updating a user but won't be included in the serialized output. this is important for security reasons, as you don't want to expose passwords in api responses.
-
-    class Meta:
-        model = User
-        fields = ["id", "username", "password", "email"] 
-    
-    def create(self, validated_data): # overriding the create method to handle user creation properly, especially for password hashing.
-        user = User( # creating a new user instance
-            username=validated_data["username"], # setting the username from the validated data.
-            email=validated_data["email", ""], # if email is not provided, it defaults to an empty string.
-        )
-        user.set_password(validated_data["password"]) # using set_password method to hash the password before saving it to the database. this is crucial for security, as storing plain-text passwords is a major vulnerability.
-        user.save() # saving the user instance to the database.
-        return user # returning the newly created user instance.

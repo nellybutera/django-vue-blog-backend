@@ -5,6 +5,7 @@ from django.urls import path, include # path is for defining individual url patt
 from rest_framework.routers import DefaultRouter # DefaultRouter automatically creates url patterns for viewsets, simplifying the process of setting up RESTful APIs.
 from .views import PostViewSet, CommentViewSet
 
+
 router = DefaultRouter() # creates an instance of DefaultRouter
 router.register(r"posts", PostViewSet) # this line registers the PostViewSet with the router under the prefix "posts". it means that any url starting with "posts/" will be handled by the PostViewSet. the r before the string indicates it's a raw string, which is useful for regex patterns.
 router.register(r"comments", CommentViewSet) # automatically generates standard CRUD (create, read, update, delete) endpoints for comments just like it does for posts.
