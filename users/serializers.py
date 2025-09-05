@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data): # overriding the create method to handle user creation properly, especially for password hashing.
         user = User( # creating a new user instance
             username=validated_data["username"], # setting the username from the validated data.
-            email=validated_data["email", ""], # if email is not provided, it defaults to an empty string.
+            email=validated_data.get("email", ""), # setting the email from the validated data, defaulting to an empty string if not provided.
         )
         user.set_password(validated_data["password"]) # using set_password method to hash the password before saving it to the database. this is crucial for security, as storing plain-text passwords is a major vulnerability.
         user.save() # saving the user instance to the database.
