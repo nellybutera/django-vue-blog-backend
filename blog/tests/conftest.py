@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 
 @pytest.fixture
-@pytest.mark.django_db
 def user():
     """A fixture to create and return a new User instance."""
     return User.objects.create_user(username="testuser", password="pass123")
