@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )# import the JWT token obtain view for authentication endpoints
 from users.views import ProfileUpdateView
-from blog.views import CategoryListCreateView
+from blog.views import CategoryListCreateView, LikePostView
 
 
 urlpatterns = [ # this list holds all the url patterns for my project.
@@ -33,5 +33,6 @@ urlpatterns = [ # this list holds all the url patterns for my project.
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"), # endpoint for refreshing JWT tokens, which means getting a new access token using a valid refresh token (for maintaining session without re-login).
     path("api/auth/profile/", ProfileUpdateView.as_view(), name='profile-update'), # endpoint for retrieving and updating the authenticated user's profile information. the name 'profile-update' can be used to reference this url pattern elsewhere in the project.
     path("api/categories/", CategoryListCreateView.as_view(), name="category-list-create"), # endpoint for listing all categories and creating new ones. it allows users to view existing categories and add new categories when they are logged in.
+    path("api/posts/<int:pk>/like/", LikePostView.as_view(), name="like-post") # endpoint for liking or unliking a specific post identified by its primary key (pk). it allows authenticated users to like a post if they haven't already, or unlike it if they have.
 
 ]
