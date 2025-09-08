@@ -23,9 +23,13 @@ class CommentSerializer(serializers.ModelSerializer): # modelserializer generate
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source="author.username")
     comments = CommentSerializer(many=True, read_only=True) # nested serializer to include all comments related to a post. many=True indicates that a post can have multiple comments. read_only=True means that comments can't be added or modified directly through the PostSerializer; they are managed separately through the CommentSerializer.
+    likes_count = serializers.SerializerMethodField()
 
+    def get_likes_count(self,obj):
+        return obj.likes.count()
+    
     categories = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = Post
-        fields = ["id", "title", "content", "author", "created_at", "updated_at", "comments", "categories"] # includes the comments field in the serialized output, allowing clients to see all comments associated with a post when they retrieve post data.
+        fields = ["id", "title", "content", "author", "created_at", "updated_at", "comments", "categories", 'likes_count'] # includes the comments field in the serialized output, allowing clients to see all comments associated with a post when they retrieve post data.
 

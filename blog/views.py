@@ -2,10 +2,13 @@
 # Including everything in between. All functionalities will be defined here.
 
 from rest_framework import viewsets, permissions , generics # imports viewsets and permissions modules from the Django rest_framework package. viewsets provide a way to define the behavior of my api endpoints, while permissions help control access to those endpoints based on user authentication and authorization. generics provides generic views that can be used to quickly create common api views.
-from .models import Post, Comment, Category
+from rest_framework import status
+from .models import Post, Comment, Category, Like # imports the Post, Comment, Category, and Like models from the current app's models.py file. these models represent the database tables for my blog application and will be used to interact with the data stored in those tables.
 from .serializers import PostSerializer, CommentSerializer, CategorySerializer
 from django.contrib.auth.models import User
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 class PostViewSet(viewsets.ModelViewSet): # modelviewset provides default implementations for standard actions like list, create, retrieve, update, and destroy. it is a class provided by drf that simplifies the process of creating api endpoints for my models.
     queryset = Post.objects.all().order_by("-created_at") # retrieves all post objects from the database and orders them by created_at in descending order (newest first). it's a database query that defines which set of data this viewset will operate on. the hyphen (-) before created_at indicates descending order.
@@ -29,4 +32,22 @@ class CategoryListCreateView(generics.ListCreateAPIView): # generic view that pr
     queryset = Category.objects.all() # retrieves all category objects from the database. this defines the set of data that this view will operate on.
     serializer_class = CategorySerializer # specifies the serializer to be used for category data. it defines how category instances are converted to and from JSON format.
     permission_classes = [permissions.IsAuthenticatedOrReadOnly] # this ensures that any user can view the list of categories (read-only access), but only authenticated users can create new categories. it's important for maintaining control over who can add new categories to the system.
+
+
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            post = Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if not created:
+            # if the like already exists, it means the user wants to unlike the post
+            like.delete()
+            return Response({"status": "unliked"}, status=status.HTTP_200_OK)
+        return Response({"status": "liked"}, status=status.HTTP_201_CREATED)
 
