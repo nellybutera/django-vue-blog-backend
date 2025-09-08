@@ -4,6 +4,9 @@
 from django.db import models # importing models module form django's database library.
 from django.contrib.auth.models import User #Django's built-in user model
 
+from django.db.models.signals import post_save # to create a user profile automatically when a new user is created.
+from django.dispatch import receiver # to listen for the post_save signal.
+
 # django creates a new table called Post.
 class Post(models.Model): 
     title = models.CharField(max_length=200)
@@ -25,3 +28,22 @@ class Comment(models.Model):
     def __str__(self): # human readable representation of the comment object
         return f"Comment by {self.author.username} on {self.post.title}"
     
+
+class Profile(models.Model): 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(max_length=500, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} Profile"
+    
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
