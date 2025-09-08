@@ -13,3 +13,4 @@ def test_create_comment(user): # Use the user fixture
     comment = Comment.objects.create(post=post, author=user, content="Nice!")
     assert comment.content == "Nice!"
     assert comment.post == post
+

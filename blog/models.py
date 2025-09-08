@@ -7,6 +7,12 @@ from django.contrib.auth.models import User #Django's built-in user model
 from django.db.models.signals import post_save # to create a user profile automatically when a new user is created.
 from django.dispatch import receiver # to listen for the post_save signal.
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
 # django creates a new table called Post.
 class Post(models.Model): 
     title = models.CharField(max_length=200)
@@ -14,6 +20,8 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    categories = models.ManyToManyField(Category, related_name='posts')
 
     def __str__(self): # string representation of the model, it helps to identify the object easily when we print it.
         return self.title
@@ -47,3 +55,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User) 
 def save_user_profile(sender, instance, **kwargs): # this function saves the profile whenever the user is saved.
     instance.profile.save() # save the profile whenever the user is saved.
+
+
+    
