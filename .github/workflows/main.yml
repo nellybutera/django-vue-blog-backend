@@ -1,0 +1,45 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - main
+      - development
+    pull_request:
+      branches:
+      - main
+      - development
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.11', '3.12']
+        django-version: ['5.0', '5.1']
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-django
+
+    - name: Set up Environment Variables
+      run: |
+        echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
+        echo "DATABASE_URL=sqlite:///db.sqlite3" >> .env
+        echo "DEBUG=True" >> .env
+
+    - name: Run Tests
+      env:
+        DJANGO_SETTINGS_MODULE: backend.settings
+      run: |
+        pytest 
