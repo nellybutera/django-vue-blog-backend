@@ -22,6 +22,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )# import the JWT token obtain view for authentication endpoints
 from users.views import ProfileUpdateView
+from blog.views import CategoryListCreateView
 
 
 urlpatterns = [ # this list holds all the url patterns for my project.
@@ -31,5 +32,6 @@ urlpatterns = [ # this list holds all the url patterns for my project.
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"), # endpoint for obtaining JWT tokens, which means logging in and getting access and refresh tokens. which are useful for authenticating subsequent requests to protected endpoints (for logged-in users).
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"), # endpoint for refreshing JWT tokens, which means getting a new access token using a valid refresh token (for maintaining session without re-login).
     path("api/auth/profile/", ProfileUpdateView.as_view(), name='profile-update'), # endpoint for retrieving and updating the authenticated user's profile information. the name 'profile-update' can be used to reference this url pattern elsewhere in the project.
+    path("api/categories/", CategoryListCreateView.as_view(), name="category-list-create"), # endpoint for listing all categories and creating new ones. it allows users to view existing categories and add new categories when they are logged in.
 
 ]

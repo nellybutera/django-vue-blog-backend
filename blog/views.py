@@ -2,8 +2,8 @@
 # Including everything in between. All functionalities will be defined here.
 
 from rest_framework import viewsets, permissions , generics # imports viewsets and permissions modules from the Django rest_framework package. viewsets provide a way to define the behavior of my api endpoints, while permissions help control access to those endpoints based on user authentication and authorization. generics provides generic views that can be used to quickly create common api views.
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from .models import Post, Comment, Category
+from .serializers import PostSerializer, CommentSerializer, CategorySerializer
 from django.contrib.auth.models import User
 
 
@@ -23,4 +23,10 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class CategoryListCreateView(generics.ListCreateAPIView): # generic view that provides GET and POST methods for listing all categories and creating new ones. it's useful for allowing users to view all categories and add new categories when they are logged in.
+    queryset = Category.objects.all() # retrieves all category objects from the database. this defines the set of data that this view will operate on.
+    serializer_class = CategorySerializer # specifies the serializer to be used for category data. it defines how category instances are converted to and from JSON format.
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # this ensures that any user can view the list of categories (read-only access), but only authenticated users can create new categories. it's important for maintaining control over who can add new categories to the system.
 
