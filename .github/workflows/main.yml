@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - development
-    pull_request:
-      branches:
+  pull_request:
+    branches:
       - main
       - development
 
@@ -32,22 +32,19 @@ jobs:
         pip install -r requirements.txt
         pip install pytest-django
 
-    - name: Set up Environment Variables
+    - name: Migrate Database
+      env:
+        DJANGO_SETTINGS_MODULE: backend.settings
+        DATABASE_ENGINE: django.db.backends.sqlite3
+        DATABASE_NAME: db.sqlite3
       run: |
-        echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
-        echo "DATABASE_URL=sqlite:///db.sqlite3" >> .env
-        echo "DEBUG=True" >> .env
+        python manage.py migrate
 
     - name: Run Tests
       env:
         DJANGO_SETTINGS_MODULE: backend.settings
         # Set the environment variables for the test database here
         DATABASE_ENGINE: django.db.backends.sqlite3
-        DATABASE_NAME: db.sqlite3
-        DATABASE_USER: ''
-        DATABASE_PASSWORD: ''
-        DATABASE_HOST: ''
-        DATABASE_PORT: ''
-      
+        DATABASE_NAME: db.sqlite3      
       run: |
         pytest 
