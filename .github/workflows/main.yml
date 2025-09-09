@@ -19,8 +19,16 @@ jobs:
         python-version: ['3.11', '3.12']
         django-version: ['5.0', '5.1']
 
+    # Set environment variables for the entire job here
+    env:
+      DJANGO_SETTINGS_MODULE: backend.settings
+      SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      DATABASE_ENGINE: django.db.backends.sqlite3
+      DATABASE_NAME: db.sqlite3
+
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -33,18 +41,9 @@ jobs:
         pip install pytest-django
 
     - name: Migrate Database
-      env:
-        DJANGO_SETTINGS_MODULE: backend.settings
-        DATABASE_ENGINE: django.db.backends.sqlite3
-        DATABASE_NAME: db.sqlite3
       run: |
         python manage.py migrate
 
-    - name: Run Tests
-      env:
-        DJANGO_SETTINGS_MODULE: backend.settings
-        # Set the environment variables for the test database here
-        DATABASE_ENGINE: django.db.backends.sqlite3
-        DATABASE_NAME: db.sqlite3      
+    - name: Run Tests     
       run: |
         pytest 
