@@ -29,4 +29,3 @@ class UserSerializer(serializers.ModelSerializer):
             Profile.objects.create(user=user, **profile_data) # creating the profile with the provided data.
         
         return user # returning the newly created user instance.
-    
